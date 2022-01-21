@@ -43,10 +43,38 @@ app.post('/todos', (req, res) => {
 		.catch(error => console.log(error))
 })
 
+app.put('/todos/:id', (req,res) => {
+	const temperaryUserId = '168' // 之後回來改
+	const id = req.params.id
+	const {name, isDone} = req.body
+	console.log(isDone)
+	return Todo.findOne({
+		where:{ // 用where條件式尋找
+		id, 
+		UserId: temperaryUserId
+		}}) 
+		.then(todo => {
+			if (isDone){
+				return todo.update({name,isDone:'1'})
+			}
+			return todo.update({name,isDone:'0'})
+		})
+		.then(() => res.redirect(`/todos/${id}`))
+		.catch(error => res.status(422).json(error))
+})
+
 app.get('/todos/:id', (req,res) => {
 	const id = req.params.id
 	return Todo.findByPk(id) // 用主鍵尋找
 		.then(todo => res.render('detail', {todo: todo.toJSON()}))
+		.catch(error => res.status(422).json(error))
+})
+
+app.get('/todos/:id/edit', (req,res) => {
+	const temperaryUserId = '168' // 之後回來改
+	const id = req.params.id
+	return Todo.findByPk(id) // 用主鍵尋找
+		.then(todo => res.render('edit', {todo: todo.toJSON(), UserId: temperaryUserId}))
 		.catch(error => res.status(422).json(error))
 })
 
