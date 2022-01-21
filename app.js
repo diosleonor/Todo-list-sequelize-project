@@ -31,6 +31,18 @@ app.get('/', (req,res) => {
 	.catch(error => {res.status(422).json(error)})
 })
 
+app.get('/todos/new', (req, res) => {
+	res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+	const name = req.body.name
+	const temperaryUserId = '168'
+	return Todo.create({name, UserId:temperaryUserId})
+		.then(() => res.redirect('/'))
+		.catch(error => console.log(error))
+})
+
 app.get('/todos/:id', (req,res) => {
 	const id = req.params.id
 	return Todo.findByPk(id) // 用主鍵尋找
