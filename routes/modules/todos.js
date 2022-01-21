@@ -9,21 +9,22 @@ router.get('/new', (req, res) => {
 
 router.post('/', (req, res) => {
 	const name = req.body.name
-	const temperaryUserId = '168'
-	return Todo.create({name, UserId:temperaryUserId})
+	const UserId = req.user.id
+	console.log(UserId)
+	return Todo.create({name, UserId})
 		.then(() => res.redirect('/'))
 		.catch(error => console.log(error))
 })
 
 router.put('/:id', (req,res) => {
-	const temperaryUserId = '168' // 之後回來改
+	const UserId = req.user.id
 	const id = req.params.id
 	const {name, isDone} = req.body
 	console.log(isDone)
 	return Todo.findOne({
 		where:{ // 用where條件式尋找
 		id, 
-		UserId: temperaryUserId
+		UserId
 		}}) 
 		.then(todo => {
 			if (isDone){
@@ -36,27 +37,25 @@ router.put('/:id', (req,res) => {
 })
 
 router.get('/:id', (req,res) => {
+	const UserId = req.user.id
 	const id = req.params.id
-	return Todo.findByPk(id) // 用主鍵尋找
+	return Todo.findOne({where:{id, UserId}})
 		.then(todo => res.render('detail', {todo: todo.toJSON()}))
 		.catch(error => res.status(422).json(error))
 })
 
 router.get('/:id/edit', (req,res) => {
-	const temperaryUserId = '168' // 之後回來改
+	const UserId = req.user.id
 	const id = req.params.id
-	return Todo.findByPk(id) // 用主鍵尋找
-		.then(todo => res.render('edit', {todo: todo.toJSON(), UserId: temperaryUserId}))
+	return Todo.findOne({where:{id, UserId}})
+		.then(todo => res.render('edit', {todo: todo.toJSON(), UserId}))
 		.catch(error => res.status(422).json(error))
 })
 
 router.delete('/:id', (req, res) => {
-	const temperaryUserId = '168'
+	const UserId = req.user.id
 	const id = req.params.id
-	return Todo.findOne({
-		where:{
-			id, UserId: temperaryUserId
-		}})
+	return Todo.findOne({where:{id, UserId}})
 		.then(todo => todo.destroy())
 		.then(() => res.redirect('/'))
 		.catch(error => res.status(422).json(error))
