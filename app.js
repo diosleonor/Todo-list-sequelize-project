@@ -22,6 +22,13 @@ app.get('/', (req,res) => {
 	.catch(error => res.status(422).json(error))
 })
 
+app.get('/todos/:id', (req,res) => {
+	const id = req.params.id
+	return Todo.findByPk(id) // 用主鍵尋找
+		.then(todo => res.render('detail', {todo: todo.toJSON()}))
+		.catch(error => res.status(422).json(error))
+})
+
 app.get('/users/login', (req, res) => {
 	res.render('login')
 })
