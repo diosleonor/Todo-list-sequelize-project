@@ -78,6 +78,18 @@ app.get('/todos/:id/edit', (req,res) => {
 		.catch(error => res.status(422).json(error))
 })
 
+app.delete('/todos/:id', (req, res) => {
+	const temperaryUserId = '168'
+	const id = req.params.id
+	return Todo.findOne({
+		where:{
+			id, UserId: temperaryUserId
+		}})
+		.then(todo => todo.destroy())
+		.then(() => res.redirect('/'))
+		.catch(error => res.status(422).json(error))
+})
+
 app.get('/users/login', (req, res) => {
 	res.render('login')
 })
