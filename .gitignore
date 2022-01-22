@@ -12,3 +12,4 @@ ehthumbs.db
 node_modules
 *.log
 *.gz
+.env
